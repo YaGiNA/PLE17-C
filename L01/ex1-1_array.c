@@ -1,25 +1,44 @@
 #include <stdio.h>
 
+void raw_array(void){
+  int i = 0, j;
+  double nums[20];
+  double tmp, sum_raw_array = 0;
+  sum_raw_array = 0;
+  for(i=0; i<20; i++) {
+    scanf("%lf", &nums[i]);
+    sum_raw_array += nums[i];
+  }
+
+  printf("入力順: %e\n", sum_raw_array);
+}
+
+void sorted_array(void){
+  int n = 0, i = 0, j;
+  double nums[20];
+  double tmp, sum_sorted_array = 0;
+  for(i=0; i<20; i++) {
+    scanf("%lf", &nums[i]);
+  }
+
+  /* 数値を昇順にソート */
+  for (i=0; i<20;i++) {
+    for (j=i+1; j<20; j++) {
+      if (nums[i] > nums[j]) {
+        tmp =  nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+      }
+    }
+  }
+
+  for(i=0; i<20; i++){
+    sum_sorted_array += nums[i];
+  }
+  printf("ソート順: %20.18e\n", sum_sorted_array);
+}
+
 int main(void){
-  float nums[20];
-  FILE *fp;
-  char *fname = "numbers.txt";
- 
-  fp = fopen(fname, "r");
-  if(fp == NULL) {
-    printf("ファイルを開くことが出来ませんでした．¥n");
-    return;
-  }
-  
-  int n = 0, i = 0;
-  float num;
-  /*  ファイルが終わりでない　「かつ」　配列を飛び出さないうちは，読み込みを続ける  */
-  while ( ! feof(fp) && n < 21) {
-    fscanf(fp, "%f", &num);
-    nums[n] = num;
-    printf("%e\n", nums[n]);
-    n++;
-  }
-  fclose(fp);
-  return 0;
+  raw_array();
+  sorted_array();
 }
