@@ -1,0 +1,11 @@
+Tanaka 2
+Kikuchi 33
+Maru 9
+Arai 25
+Suzuki 51
+Brad 55
+Abe 60
+Ishihara 31
+Kris 42
+Ogata 79
+END 0
