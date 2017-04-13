@@ -38,14 +38,15 @@ void list_free(node_type *header)
 
 
 int insert_rear(node_type **pp, char name[16], int score){
+    int i;
     node_type *temp;
-    temp = new_node(name, score, NULL);
     if(temp == NULL){
         return 0;
     }
-    while(*pp != NULL){
+    while(*pp != NULL && strcmp(name, (*pp)->name) > 0){
         pp = &((*pp)->next);
     }
+    temp = new_node(name, score, *pp);
     *pp = temp;
     return 1;
 }
