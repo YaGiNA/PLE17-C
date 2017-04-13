@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 typedef struct node_tag{
     char name[16];
@@ -36,7 +37,6 @@ void list_free(node_type *header)
     }
 }
 
-
 int insert_rear(node_type **pp, char name[16], int score){
     int i;
     node_type *temp;
@@ -51,89 +51,72 @@ int insert_rear(node_type **pp, char name[16], int score){
     return 1;
 }
 
-void print_nodes(node_type *p){
+int sum_print_score(node_type *p){
+  int sum_sorted_array = 0;
+  while(p != NULL){
+      printf("%s: %d\n", p->name, p->score);
+      sum_sorted_array += p->score;
+      p = p->next;
+  }
+  return sum_sorted_array;
+}
+
+
+int *copy_sort_node(node_type **p2, node_type **p1){
+    node_type *temp;
+    if(temp == NULL){
+        return 0;
+    }
+    while (*p1 != NULL) {
+        while(*p2 != NULL && (*p2)->score < (*p1)->score){
+            printf("%s: %d VS %s: %d\n", (*p2)->name, (*p2)->score, (*p1)->name, (*p1)->score);
+            p2 = &((*p2)->next);
+        }
+        printf("-------------\n");
+        temp = new_node((*p1)->name, (*p1)->score, *p2);
+        *p2 = temp;
+        *p1 = (*p1)->next;
+    }
+
+    return 0;
+}
+
+
+int sum_of_nodes(node_type *p){
+    int sum = 0;
     while(p != NULL){
-        printf("%s: %d\n", p->name, p->score);
+        sum = sum + p->score;
         p = p->next;
     }
+    return sum;
 }
 
-/* ソートはマージソートを適用
-static node_type *merge_list(node_type *list1, node_type *list2)
-{
-    node_type dummy = {0};
-    node_type *p = NULL;
-    p = &dummy;
-
-    while((list1 != NULL) && (list2 != NULL)){
-        if(list1->student->score <= list2->student->score){
-            p->next = list1;
-            p = list1;
-            list1 = list1->next;
-        }else{
-            p->next = list2;
-            p = list2;
-            list2 = list2->next;
-        }
-    }
-
-    if(list1 == NULL){
-        p->next = list2;
-    }else{
-        p->next = list1;
-    }
-    return dummy.next;
-}*/
-/*
-node_type *merge_sort(node_type *header)
-{
-    node_type *partition = NULL;
-    node_type *forward   = header;
-    node_type *backward  = header->next;
-    if((header == NULL) || (header->next == NULL)) return(header);
-
-
-    if(backward != NULL) backward = backward->next;
-    while((backward != NULL) && (backward->next != NULL)){
-        forward = forward->next;
-        backward = backward->next->next;
-    }
-
-
-    partition = forward->next;
-    forward->next = NULL;
-
-
-    return merge_list(merge_sort(header), merge_sort(partition));
-}
-*/
 int main(void){
-    node_type *head;
-    initialize(&head);
-    char end[] = "END";
+    node_type *head1;
+    initialize(&head1);
     FILE *f;
     char file_name[] = "student.txt";
-    int score;
     char name[16];
+    int score, sum_sorted_array = 0, i;
     /* ファイルオープン */
     if ((f = fopen(file_name, "r")) == NULL) {
         fprintf(stderr, "%s\n", "error: can't read file.");
         return EXIT_FAILURE;
     }
+    printf("----------------辞書順----------------\n");
     while(fscanf(f, "%s%d", name, &score) != EOF){
-        if(strcmp(name, end) == 0){break;}
-        insert_rear(&head, name, score);
+        insert_rear(&head1, name, score);
     }
     fclose(f);
+    i = sum_print_score(head1);
 
-    printf("----------------name入力順----------------\n");
-    print_nodes(head);
-/*
-    head = merge_sort(head);
-    printf("----------------昇順ソートをした場合の要素----------------\n");
-    sum_sorted_array = sum_of_nodes(head);
-    printf("ソート順: %g\n", sum_sorted_array);
-*/
-    list_free(head);
+    printf("----------------score昇順----------------\n");
+    node_type *head2;
+    initialize(&head2);
+    copy_sort_node(&head2, &head1);
+    sum_sorted_array = sum_print_score(head2);
+    printf("ソート順: %d\n", sum_sorted_array);
+    list_free(head2);
+    list_free(head1);
     return 0;
 }
