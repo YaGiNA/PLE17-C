@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 void raw_array(double *nums){
     printf("----------------そのまま入力した場合の要素----------------\n");
@@ -17,7 +18,7 @@ void sorted_array(double *nums){
     /* 数値を昇順にソート */
     for (i=0; i<21;i++) {
         for (j=i+1; j<21; j++) {
-            if (nums[i] > nums[j]) {
+            if (fabs(nums[i]) > fabs(nums[j])) {
                 tmp =    nums[i];
                 nums[i] = nums[j];
                 nums[j] = tmp;

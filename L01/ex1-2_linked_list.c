@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 typedef double data_type;
 typedef struct node_tag{
@@ -66,7 +67,7 @@ static node_type *merge_list(node_type *list1, node_type *list2)
     p = &dummy;
 
     while((list1 != NULL) && (list2 != NULL)){
-        if(list1->data <= list2->data){
+        if(fabs(list1->data) <= fabs(list2->data)){
             p->next = list1;
             p = list1;
             list1 = list1->next;
@@ -122,7 +123,7 @@ int main(void){
     printf("入力順: %g\n", sum_raw_array);
 
     head = merge_sort(head);
-    printf("----------------昇順ソートをした場合の要素----------------\n");
+    printf("----------------絶対値昇順をした場合の要素----------------\n");
     sum_sorted_array = sum_of_nodes(head);
     printf("ソート順: %g\n", sum_sorted_array);
 
