@@ -5,7 +5,6 @@
 
 #define TRUE 0
 #define FALSE 1
-#define NUMBER '0'
 
 typedef char data_type; /* データの型 */
 typedef struct node_tag {
@@ -33,7 +32,7 @@ node_type *new_node(data_type x, node_type *p)
     temp->data = x;
     temp->next = p;
     return temp;
- }
+    }
 }
 
 int is_empty(node_type *p) /* 空スタックのとき真、 */
@@ -41,17 +40,6 @@ int is_empty(node_type *p) /* 空スタックのとき真、 */
     if (p == NULL) return TRUE; /* 空スタックのとき */
     else return FALSE; /* 空スタックでないとき */
 }
-
-int insert_rear(node_type **pp, data_type x) {
-    node_type *temp;
-    temp = new_node(x, NULL); /* 関数new_nodeの呼出し */ if (temp == NULL) return 1;
-    while (*pp != NULL) {
-        pp = &((*pp)->next);
-    }
-    *pp = temp;
-    return 0;
-}
-/* 末尾のノードまで進める */
 
 data_type top(node_type *p)
 {
@@ -87,61 +75,12 @@ int rank(char *op) {
     if (*op == '+' || *op == '-') return 2;
     if (*op == '(') return 4;
     if (*op == ')') return 1;
-    if (*op == '=') return 1;
+    if (*op == '=') return 0;
     return 5;
 }
-/*
-data_type **convert(char *token[], int length) {
-    node_type *stack;
-    initialize(&stack)
-    data_type *pToken;
-    int n, nBuf = 0;
-    data_type *tmp;
-    for (n = 0; n < length; n++) {
-        printf("flag1\n");
-        if (isdigit(*token[n])) {
-        // 数値ならば、バッファに追加
-        buffer[nBuf++] = token[n];
-        printf("%s", token[n]);
-        } else if (*token[n] == ')') {
-            // '('までスタックからポップし、バッファへ. '(' と ')' は捨てる.
-            while ((pToken = pop(&stack)) != '\0' && *pToken != '(')
-	              buffer[nBuf++] = pToken;
-            if (*pToken == '\n'){error("'(' がない");}
-        } else if (*token[n] == '(') {
-	          push(&stack, *token[n]);
-        } else if (top(stack) == '\0') {
-            push(&stack, *token[n]);
-	      } else if (*token[n] == '=' ){
-  	        tmp = pop(&stack);
-	          push(&stack, *token[n]);
-        } else {
-            while (top(stack) != '\0') {
-                data_type intop = top(stack);
-                if (rank(token[n]) > rank(&intop)) {
-                    // 現在のトークンはスタック最上位のトークンより優先順位が低い
-                    buffer[nBuf++] = pop(&stack);
-                } else {
-     		            push(&stack, *token[n]);
-                    break;
-                }
-            }
-        }
-    }
-    // スタックが空になるまでトークンを取り出し、バッファへ
-    while ((pToken = pop(&stack)) != "\0")
-        buffer[nBuf++] = pToken;
-    buffer[nBuf++] = NULL;
-    return buffer;
-}*/
 
-void printRPN(char *buffer[]) {
-    int n=0;
-    for (n = 0; buffer[n] != NULL; n++)
-        printf("%s ", buffer[n]);
-}
 
-void* convert2(char *token[], node_type *buffer, int length) {
+void convert2(char *token[], int length) {
     node_type *stack;
     initialize(&stack);
     int n;
@@ -149,9 +88,9 @@ void* convert2(char *token[], node_type *buffer, int length) {
     for (n = 0; n < length; n++) {
         head_stack[0] = top(stack);
         while(is_empty(stack) != TRUE &&
-              '=' == head_stack[0] &&
+              '(' != head_stack[0] &&
               rank(token[n]) <= rank(head_stack)){
-            printf("%c", top(stack));
+            printf("%c ", top(stack));
             pop(&stack);
             head_stack[0] = top(stack);
         }
@@ -162,20 +101,27 @@ void* convert2(char *token[], node_type *buffer, int length) {
         }
     }
     while(is_empty(stack) != TRUE){
-        printf("%c\n", top(stack));
+        printf("%c ", top(stack));
         pop(&stack);
     }
-    return buffer;
+    printf("\n");
 }
 
 
 // 引用終了
 
 int main(void){
-    node_type *head;
-    initialize(&head);
-    data_type *frml1[] = {"A", "=", "(", "5", "-", "4", ")", "/", "2", "+", "3", "*", "6"};
-    // data_type **buf1 = convert(frml1, sizeof(frml1)/sizeof(char*));
-    head = convert2(frml1, head, sizeof(frml1)/sizeof(char*));
-    // printRPN(buf2);
+    printf("B=2, C=3, D=4, E=5, F=6として演算\n");
+    printf("-------------------------\n");
+    data_type *frml1[] = {"A", "=", "(", "2", "-", "3", ")", "/", "4", "+", "5", "*", "6"};
+    convert2(frml1, sizeof(frml1)/sizeof(char*));
+    printf("A=%f\n", (2.0-3.0)/4.0+5.0*6.0);
+    printf("-------------------------\n");
+    data_type *frml2[] = {"A", "=", "(", "2", "-", "3", "/", "4", "+", "5", ")", "*", "6"};
+    convert2(frml2, sizeof(frml2)/sizeof(char*));
+    printf("A=%f\n", (2.0-3.0/4.0+5.0)*6.0);
+    printf("-------------------------\n");
+    data_type *frml3[] = {"A", "=", "2", "-", "3", "/", "(", "4", "+", "5", "*", "6" ")",};
+    convert2(frml3, sizeof(frml3)/sizeof(char*));
+    printf("A=%f\n", 2.0-3.0/(4.0+5.0*6.0));
 }
