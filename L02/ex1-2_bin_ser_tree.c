@@ -39,6 +39,7 @@ int insert(node_type **pp, data_type x) {
         *pp = temp;
         return SUCCESS;
     }else {
+        /* 絶対値比較のためfabs()使用 */
         if (fabs(x) <= fabs((*pp)->data)) insert(&((*pp)->left), x);
         else if (fabs(x) > fabs((*pp)->data)) insert(&((*pp)->right), x);
     }
@@ -48,6 +49,7 @@ int insert(node_type **pp, data_type x) {
 
 double tree_size(node_type *p) {
     double sump=0, left=0, right=0;
+    /* 子ノードが存在すれば、再帰呼び出しで子ノードまでの合計を呼び出す */
     if(p->left != NULL){
         left=tree_size(p->left);
     }
@@ -55,6 +57,7 @@ double tree_size(node_type *p) {
     if(p->right != NULL){
         right=tree_size(p->right);
     }
+    /* 合計は、左右の子ノードまでの合計+自分の値　*/
     sump = left + right + p->data;
     return sump;
 }
