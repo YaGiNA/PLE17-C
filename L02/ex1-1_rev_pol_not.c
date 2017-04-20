@@ -61,14 +61,16 @@ int push(node_type **pp, data_type x)
 int pop(node_type **pp) {
     node_type *temp;
     if (*pp != NULL) {
-        temp = (*pp)->next; free(*pp); /* メモリの解放 */ *pp = temp;
+        temp = (*pp)->next;
+        free(*pp); /* メモリの解放 */
+        *pp = temp;
         return 0;
     }
     else return 1;
 }
 
 
-// 以下、http://home.a00.itscom.net/hatada/c-tips/rpn/rpn02.htmlより引用
+// 引用元: http://home.a00.itscom.net/hatada/c-tips/rpn/rpn02.html
 // 演算子の優先順位を返す
 int rank(char *op) {
     if (*op == '*' || *op == '/' ) return 3;
@@ -113,15 +115,24 @@ void convert2(char *token[], int length) {
 int main(void){
     printf("B=2, C=3, D=4, E=5, F=6として演算\n");
     printf("-------------------------\n");
-    data_type *frml1[] = {"A", "=", "(", "2", "-", "3", ")", "/", "4", "+", "5", "*", "6"};
+    data_type *frml1[] = {
+        "A", "=", "(", "2", "-", "3", ")",
+        "/", "4", "+", "5", "*", "6"
+    };
     convert2(frml1, sizeof(frml1)/sizeof(char*));
     printf("A=%f\n", (2.0-3.0)/4.0+5.0*6.0);
     printf("-------------------------\n");
-    data_type *frml2[] = {"A", "=", "(", "2", "-", "3", "/", "4", "+", "5", ")", "*", "6"};
+    data_type *frml2[] = {
+        "A", "=", "(", "2", "-", "3", "/",
+        "4", "+", "5", ")", "*", "6"
+    };
     convert2(frml2, sizeof(frml2)/sizeof(char*));
     printf("A=%f\n", (2.0-3.0/4.0+5.0)*6.0);
     printf("-------------------------\n");
-    data_type *frml3[] = {"A", "=", "2", "-", "3", "/", "(", "4", "+", "5", "*", "6" ")",};
+    data_type *frml3[] = {
+        "A", "=", "2", "-", "3", "/", "(",
+        "4", "+", "5", "*", "6" ")",
+    };
     convert2(frml3, sizeof(frml3)/sizeof(char*));
     printf("A=%f\n", 2.0-3.0/(4.0+5.0*6.0));
 }
